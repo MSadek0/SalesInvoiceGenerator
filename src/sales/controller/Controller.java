@@ -10,11 +10,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import sales.model.Invoice;
@@ -116,6 +120,7 @@ public class Controller implements ActionListener, ListSelectionListener {
             ArrayList<Invoice> invoicesArray = new ArrayList<>();
             
             for(String headerLine : headerLines){
+                try{
                 String[] headerFields = headerLine.split(",");
                 int invoiceNumber = Integer.parseInt(headerFields[0]);
                 String invoiceDate = headerFields[1];
@@ -123,6 +128,11 @@ public class Controller implements ActionListener, ListSelectionListener {
                 
                 Invoice invoice = new Invoice(invoiceNumber, invoiceDate, customerName);
                 invoicesArray.add(invoice);
+                }catch (Exception ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Error in Format","Error", JOptionPane.ERROR_MESSAGE);
+ 
+                }
             }
 System.out.println("Check Point1");
          result = fc.showOpenDialog(frame);
@@ -133,6 +143,7 @@ System.out.println("Check Point1");
                 itemLines = Files.readAllLines(itemPath);
 System.out.println("Check Point2");
              for (String itemLine : itemLines){
+                 try {
                  String itemParts[] = itemLine.split(",");
                  int invoiceNumber = Integer.parseInt(itemParts[0]);
                  String itemName = itemParts[1];
@@ -149,7 +160,10 @@ System.out.println("Check Point2");
                 }
                 Item item = new Item(itemName, itemPrice, count, inv);
                 inv.getItems().add(item);
-                
+                 } catch (Exception ex){
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Error in Format","Error", JOptionPane.ERROR_MESSAGE);
+             }
              }
              System.out.println("Check Point3");             
         }
@@ -165,6 +179,8 @@ System.out.println("Check Point2");
         }
         }catch (IOException ex){
                 ex.printStackTrace();
+                JOptionPane.showMessageDialog(frame, "Cannot Read File","Error", JOptionPane.ERROR_MESSAGE);
+                
                 
                 }
             
@@ -258,16 +274,31 @@ System.out.println("Check Point2");
         String date = invoiceDialog.getInvDateField().getText();
         String customer = invoiceDialog.getCustNameField().getText();
         int num = frame.getNextInvoiceNum();
-        
-        Invoice invoice = new Invoice(num, date, customer);
+        try{
+           String[] dateParts = date.split("-");
+           if (dateParts.length < 3){
+              JOptionPane.showMessageDialog(frame, "Wrong Date Format", "Error", JOptionPane.ERROR_MESSAGE);
+           
+           }else {
+               int day = Integer.parseInt(dateParts[0]);
+               int month = Integer.parseInt(dateParts[1]);
+               int year = Integer.parseInt(dateParts[2]);
+               if (day > 31 || month > 12){
+                  JOptionPane.showMessageDialog(frame, "Wrong Date Format", "Error", JOptionPane.ERROR_MESSAGE);
+                
+               }else{
+           Invoice invoice = new Invoice(num, date, customer);
         frame.getInvoices().add(invoice);
         frame.getInvoicesTableModel().fireTableDataChanged();
         invoiceDialog.setVisible(false);
         invoiceDialog.dispose();
         invoiceDialog = null;
-        
+           }
+           }
+           }catch (Exception ex){
+        JOptionPane.showMessageDialog(frame, "Wrong Date Format", "Error", JOptionPane.ERROR_MESSAGE);
     }
-
+    }    
     private void createItemCancel() {
         itemDialog.setVisible(false);
         itemDialog.dispose();
