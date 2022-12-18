@@ -64,7 +64,7 @@ public class Controller implements ActionListener, ListSelectionListener {
             case "Delete Invoice" -> {
                 deleteInvoice();
             }
-            case "Save Item" -> {
+            case "Create New Item" -> {
                 createNewItem();
             }
             case "Cancel Item" -> {

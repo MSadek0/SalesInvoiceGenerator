@@ -95,8 +95,7 @@ public class InvFrame extends javax.swing.JFrame {
         createItemButton.setBackground(new java.awt.Color(204, 204, 204));
         createItemButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         createItemButton.setForeground(new java.awt.Color(0, 102, 51));
-        createItemButton.setText("Save Item");
-        createItemButton.setActionCommand("Save Item");
+        createItemButton.setText("Create New Item");
         createItemButton.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
